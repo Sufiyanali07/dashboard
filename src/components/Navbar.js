@@ -166,33 +166,6 @@ const Navbar = () => {
                 Order History
               </Link>
               <Link
-                to="/sms-status"
-                className={`${
-                  isActive("/sms-status")
-                    ? "border-white text-white"
-                    : "border-transparent text-blue-100 hover:border-blue-300 hover:text-white"
-                } inline-flex items-center px-3 pt-1 border-b-2 text-sm font-medium transition-colors font-heading h-full relative`}
-              >
-                <svg
-                  className="h-4 w-4 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21.15 8.751c.34.15.85.15 1.2 0M10.7 2.451a17.92 17.92 0 012.6 0M12.85 19.151c-.34.15-.85.15-1.2 0"
-                  />
-                </svg>
-                Notifications
-                {/* Notification indicator - hidden */}
-                {/* <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                  <span className="inline-flex rounded-full h-2 w-2 bg-blue-400"></span>
-                </span> */}
-              </Link>
-              <Link
                 to="/receipts"
                 className={`${
                   isActive("/receipts")
@@ -295,16 +268,6 @@ const Navbar = () => {
             } block pl-3 pr-4 py-3 text-base font-medium transition-colors`}
           >
             Order History
-          </Link>
-          <Link
-            to="/sms-status"
-            className={`${
-              isActive("/sms-status")
-                ? "bg-blue-700 text-white"
-                : "text-blue-100 hover:bg-blue-700 hover:text-white"
-            } block pl-3 pr-4 py-3 text-base font-medium transition-colors`}
-          >
-            Notifications
           </Link>
           <Link
             to="/receipts"
