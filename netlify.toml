@@ -1,0 +1,21 @@
+# netlify.toml file for the Mammta Billing Dashboard
+[build]
+  command = "CI=false npm run build"
+  publish = "build"
+  
+# SPA routing for React app
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  
+# Special redirects for receipt and payment links
+[[redirects]]
+  from = "/p/receipt/*"
+  to = "/index.html"
+  status = 200
+  
+[[redirects]]
+  from = "/p/pay/*"
+  to = "/index.html"
+  status = 200 
