@@ -46,8 +46,8 @@ const Navbar = () => {
                   className="h-12 w-auto mr-2 rounded-full cursor-pointer border-2 border-transparent hover:border-white transition-all duration-200"
                   onClick={() => setSettingsDropdownOpen(!settingsDropdownOpen)}
                 />
-                {/* Settings indicator dot */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border border-white"></div>
+                {/* Settings indicator dot - hidden */}
+                {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border border-white"></div> */}
               </div>
 
               {/* Settings Dropdown */}
@@ -187,9 +187,10 @@ const Navbar = () => {
                   />
                 </svg>
                 Notifications
-                <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                {/* Notification indicator - hidden */}
+                {/* <span className="absolute -top-1 -right-1 flex h-2 w-2">
                   <span className="inline-flex rounded-full h-2 w-2 bg-blue-400"></span>
-                </span>
+                </span> */}
               </Link>
               <Link
                 to="/receipts"
