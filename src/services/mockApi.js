@@ -549,43 +549,78 @@ const MockApiService = {
       phoneNumber = phoneNumber.replace("+", "");
 
       // Get store information
-      const storeName = localStorage.getItem("storeName") || "Mammta Fabrics";
+      const storeName = localStorage.getItem("storeName") || "Mammta's Food";
 
-      // Format the bill amount for readability
+      // Format the bill amount and date for readability
       const formattedTotal = new Intl.NumberFormat("en-IN", {
         style: "currency",
         currency: "INR",
-      }).format(bill.totalAmount);
+      }).format(bill.total || 0);
 
-      // Create different messages based on payment status
-      let message = "";
+      const formattedDate = new Date(bill.date).toLocaleDateString();
+      const currentDate = new Date();
+      const formattedCurrentTime = currentDate.toLocaleTimeString();
 
       // Create a receipt or payment link based on bill status
       const baseUrl = window.location.origin;
       const receiptLink = `${baseUrl}/p/receipt/${billId}`;
 
-      if (bill.status === "pending") {
-        message = `*${storeName}*: Your bill #${billId} for ${formattedTotal} is ready.\n\n`;
-        message += `Pay using PhonePe UPI: 9309908454@ybl\n\n`;
-        message += `View or pay your bill: ${receiptLink}`;
-      } else {
-        message = `*${storeName}*: Thank you for your payment of ${formattedTotal} for bill #${billId}.\n\n`;
-        message += `View your receipt: ${receiptLink}`;
-      }
+      // Start building the message with proper structure
+      let message = `📋 *BILL NOTIFICATION*\n\n`;
+      message += `Dear ${bill.customerName},\n\n`;
+      message += `Your bill from *${storeName}* is ready!\n\n`;
+      message += `📌 Bill #${billId}\n`;
+      message += `📅 Date: ${formattedDate}\n`;
+      message += `💰 Amount: ${formattedTotal}\n`;
 
-      // Add list of items
-      if (bill.items && bill.items.length > 0) {
-        message += "\n\n*Items:*\n";
-        bill.items.forEach((item, index) => {
-          message += `${index + 1}. ${item.name}: ${item.quantity} x ₹${
-            item.price
-          } = ₹${item.quantity * item.price}\n`;
+      // Add detailed items section
+      if (bill.itemsList && bill.itemsList.length > 0) {
+        message += `\n🛍️ *ITEMS DETAILS:*\n`;
+        bill.itemsList.forEach((item, index) => {
+          const itemTotal = (item.quantity * item.price).toFixed(2);
+          message += `${index + 1}. ${item.name} (₹${item.price}) x ${
+            item.quantity
+          } = ₹${itemTotal}\n`;
         });
+      } else if (bill.itemsDetail) {
+        message += `\n🛍️ *ITEMS:*\n`;
+        bill.itemsDetail.split(", ").forEach((item, index) => {
+          message += `${index + 1}. ${item}\n`;
+        });
+      } else {
+        message += `\n🛍️ Items: ${bill.items || 0} items\n`;
       }
 
-      // Add footer with timestamp
-      const date = new Date();
-      message += `\n\nGenerated on: ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+      // Add status-specific content
+      let statusEmoji = "⏳";
+      let statusText = "PENDING";
+
+      if (bill.status === "pending") {
+        statusEmoji = "⏳";
+        statusText = "PAYMENT PENDING";
+        message += `\n${statusEmoji} Status: ${statusText}\n\n`;
+        message += `Your payment is pending.\n\n`;
+        message += `💳 Pay via UPI: 9309908454@ybl\n`;
+        message += `🔗 Pay online: ${receiptLink}\n\n`;
+        message += `📱 Payment updates via SMS`;
+      } else if (bill.status === "paid") {
+        statusEmoji = "✅";
+        statusText = "PAYMENT COMPLETED";
+        message += `\n${statusEmoji} Status: ${statusText}\n\n`;
+        message += `Thank you for your payment!\n\n`;
+        message += `🧾 View receipt: ${receiptLink}\n\n`;
+        message += `Keep this message to access your receipt anytime.`;
+      } else if (bill.status === "cancelled") {
+        statusEmoji = "❌";
+        statusText = "CANCELLED";
+        message += `\n${statusEmoji} Status: ${statusText}\n\n`;
+        message += `This bill has been cancelled. Please contact us if you have any questions.`;
+      }
+
+      // Add footer with store info and timestamp
+      message += `\n\n📞 For assistance: +91 XXXXXXXXXX`;
+      message += `\n🏪 ${storeName}`;
+      message += `\n\nGenerated on: ${formattedDate} at ${formattedCurrentTime}`;
 
       // Create WhatsApp URL
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
@@ -780,7 +815,25 @@ MockApiService.testSendSMS = async (phoneNumber) => {
     total: 199.99,
     items: 2,
     itemsDetail: "Test Item 1 x1 - ₹99.99, Test Item 2 x1 - ₹100.00",
+    itemsList: [
+      {
+        name: "Test Item 1",
+        price: 99.99,
+        quantity: 1,
+        subtotal: 99.99,
+      },
+      {
+        name: "Test Item 2",
+        price: 100.0,
+        quantity: 1,
+        subtotal: 100.0,
+      },
+    ],
     status: "pending",
+    payment: {
+      method: "upi",
+      paidAt: null,
+    },
   };
 
   console.log("[TEST] Created test bill:", testBill);
