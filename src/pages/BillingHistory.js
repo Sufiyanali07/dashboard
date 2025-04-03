@@ -725,8 +725,24 @@ const BillingHistory = () => {
                     <div>
                       <span className="text-gray-500">Items:</span> {bill.items}
                     </div>
-                    <div>
-                      <span className="text-gray-500">Total:</span> ₹
+                    <div className="col-span-2">
+                      <span className="text-gray-500">Item Details:</span>
+                      <div className="mt-1 pl-2 border-l-2 border-gray-200 text-xs">
+                        {bill.itemsDetail ? (
+                          bill.itemsDetail.split(", ").map((item, idx) => (
+                            <div key={idx} className="mb-1 leading-tight">
+                              {item}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-gray-400">
+                            No item details available
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-span-2 font-medium text-base mt-2">
+                      <span className="text-gray-700">Total:</span> ₹
                       {bill.total.toFixed(2)}
                     </div>
                   </div>
@@ -916,8 +932,20 @@ const BillingHistory = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(bill.date).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {bill.items}
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      <div className="max-w-xs">
+                        {bill.itemsDetail ? (
+                          <div className="text-xs">
+                            {bill.itemsDetail.split(", ").map((item, idx) => (
+                              <div key={idx} className="mb-1">
+                                {item}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          `${bill.items} items`
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       ₹{bill.total.toFixed(2)}

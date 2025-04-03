@@ -46,8 +46,7 @@ const Navbar = () => {
                   className="h-12 w-auto mr-2 rounded-full cursor-pointer border-2 border-transparent hover:border-white transition-all duration-200"
                   onClick={() => setSettingsDropdownOpen(!settingsDropdownOpen)}
                 />
-                {/* Settings indicator dot - hidden */}
-                {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border border-white"></div> */}
+                {/* Notification dot completely removed */}
               </div>
 
               {/* Settings Dropdown */}

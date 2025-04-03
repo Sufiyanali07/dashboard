@@ -277,18 +277,34 @@ const MockApiService = {
           customerData.paymentStatus === "paid" ? "paid" : "pending";
         const paidDate = paymentStatus === "paid" ? currentDate : null;
 
-        // Create the bill object
+        // Ensure item details are properly formatted
+        let formattedItemsDetail;
+        if (itemsDetail && itemsDetail.trim() !== "") {
+          formattedItemsDetail = itemsDetail;
+        } else {
+          // Create a more detailed format if itemsDetail is empty
+          formattedItemsDetail = itemsData
+            .map((item) => {
+              const itemTotal = (item.quantity * item.price).toFixed(2);
+              return `${item.name} (₹${item.price}) x ${item.quantity} = ₹${itemTotal}`;
+            })
+            .join(", ");
+        }
+
+        // Create the bill object with improved details
         const newBill = {
           id: billId,
           date: currentDate,
-          customerName: customerData.name,
-          phone: customerData.phone,
+          customerName: customerData.name || "Guest Customer",
+          phone: customerData.phone || "Not provided",
           items: itemsData.length,
-          itemsDetail:
-            itemsDetail ||
-            itemsData
-              .map((item) => `${item.name} - ₹${item.price} x ${item.quantity}`)
-              .join(", "),
+          itemsDetail: formattedItemsDetail,
+          itemsList: itemsData.map((item) => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            subtotal: item.quantity * item.price,
+          })),
           total: total,
           status: paymentStatus,
           sms: {
@@ -297,7 +313,10 @@ const MockApiService = {
             count: 0,
           },
           payment: {
-            method: paymentStatus === "paid" ? "upi" : null,
+            method:
+              paymentStatus === "paid"
+                ? customerData.paymentMethod || "upi"
+                : null,
             paidAt: paidDate,
           },
         };

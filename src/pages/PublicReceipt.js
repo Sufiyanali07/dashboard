@@ -140,13 +140,32 @@ const PublicReceipt = () => {
             {receipt.itemsDetail ? (
               <ul className="divide-y divide-gray-200">
                 {receipt.itemsDetail.split(", ").map((item, index) => (
-                  <li key={index} className="py-2">
+                  <li key={index} className="py-2 text-sm">
                     {item}
                   </li>
                 ))}
               </ul>
+            ) : receipt.itemsList && receipt.itemsList.length > 0 ? (
+              <ul className="divide-y divide-gray-200">
+                {receipt.itemsList.map((item, index) => (
+                  <li key={index} className="py-2 flex justify-between">
+                    <div>
+                      <span className="font-medium">{item.name}</span>
+                      <span className="text-gray-500 ml-2">
+                        x{item.quantity}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-gray-500">
+                        ₹{item.price.toFixed(2)} each
+                      </div>
+                      <div>₹{item.subtotal.toFixed(2)}</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <p>{receipt.items} items</p>
+              <p className="text-gray-500">{receipt.items} items</p>
             )}
           </div>
 
