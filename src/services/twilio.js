@@ -17,6 +17,8 @@ const getTwilioConfig = () => {
         accountSid: parsedConfig.accountSid || DEFAULT_TWILIO_ACCOUNT_SID,
         authToken: parsedConfig.authToken || DEFAULT_TWILIO_AUTH_TOKEN,
         fromNumber: parsedConfig.fromNumber || DEFAULT_TWILIO_PHONE_NUMBER,
+        enabled:
+          parsedConfig.enabled !== undefined ? parsedConfig.enabled : true,
       };
     }
   } catch (error) {
@@ -27,6 +29,7 @@ const getTwilioConfig = () => {
     accountSid: DEFAULT_TWILIO_ACCOUNT_SID,
     authToken: DEFAULT_TWILIO_AUTH_TOKEN,
     fromNumber: DEFAULT_TWILIO_PHONE_NUMBER,
+    enabled: true,
   };
 };
 
@@ -60,4 +63,31 @@ const sendSMS = async (to, body) => {
   }
 };
 
+// For backward compatibility with existing code
+const TwilioService = {
+  sendSms: sendSMS,
+  updateSettings: (settings) => {
+    try {
+      localStorage.setItem("smsSettings", JSON.stringify(settings));
+      return true;
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      return false;
+    }
+  },
+  getSettings: getTwilioConfig,
+  sendBillNotification: async (bill, billId) => {
+    // Simplified version
+    if (!bill.phone) {
+      return { success: false, error: "No phone number provided" };
+    }
+
+    const message = `Bill #${billId} for ${
+      bill.customerName
+    } with amount ₹${bill.total.toFixed(2)} - Status: ${bill.status}`;
+    return sendSMS(bill.phone, message);
+  },
+};
+
 export { sendSMS, getTwilioConfig };
+export default TwilioService;
